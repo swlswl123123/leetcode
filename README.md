@@ -95,3 +95,46 @@ private:
 4. 去除重复元素的代码位置要考虑清楚，先执行一遍再去重
 5. 去重时顺序很重要，先跳过所有重复代码后再进行操作
 6. 双指针法要遍历完全，得到一个解后可能还有其他解
+## 2019-11-9
+### 1.两数相除
+题目描述：给定两个整数，被除数$dividend$和除数$divisor$。将两数相除，要求不使用乘法、除法和$mod$运算符。
+```
+class Solution {
+public:
+    int divide(int dividend, int divisor) {
+        int sign=1, ans_tmp, divisor_tmp, ans=0;
+        if(dividend>0&&divisor>0||dividend<0&&divisor<0)
+            sign=1;
+        else
+            sign=-1;
+      //  dividend = (dividend>0)? -dividend:dividend;
+        if(dividend>0)
+            dividend=-dividend;
+        //divisor = (divisor>0)? -divisor:divisor;
+        if(divisor>0)
+            divisor=-divisor;       
+        while(dividend<=divisor){
+            ans_tmp = -1;
+            divisor_tmp = divisor;
+            while(dividend-divisor_tmp<=(divisor_tmp)){
+                if(divisor_tmp<INT_MIN-divisor_tmp){
+                    break;
+                }
+                divisor_tmp = divisor_tmp+divisor_tmp;
+                ans_tmp = ans_tmp+ans_tmp;
+            }
+            dividend = dividend - divisor_tmp;
+            ans = ans + ans_tmp;
+        }
+        if(ans==INT_MIN&&sign == 1){
+            return INT_MAX;
+        }
+        else
+            return sign>0?ans*-1:ans;
+        
+    }
+};
+```
+注意的问题：
+1. 由于INT_MIN比INT_MAX所表示数的绝对值更大，因此将除数与被除数转换成负数
+2. 在进行被除数减法运算时，要考虑效率，将被除数不断翻倍。
